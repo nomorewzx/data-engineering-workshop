@@ -16,8 +16,8 @@ object WordCount {
     val spark = SparkSession.builder.appName("Spark Word Count").getOrCreate()
     log.info("Application Initialized: " + spark.sparkContext.appName)
 
-    val inputPath = if(!args.isEmpty) args(0) else conf.getString("apps.WordCount.input")
-    val outputPath = if(args.length > 1) args(1) else conf.getString("apps.WordCount.output")
+    val inputPath = if (!args.isEmpty) args(0) else conf.getString("apps.WordCount.input")
+    val outputPath = if (args.length > 1) args(1) else conf.getString("apps.WordCount.output")
 
     run(spark, inputPath, outputPath)
 
@@ -30,8 +30,14 @@ object WordCount {
 
     import spark.implicits._
     spark.read
-      .text(inputPath)  // Read file
+      .text(inputPath) // Read file
       .as[String] // As a data set
+      .flatMap(line => line .split(" "))
+      .map(word => word.toLowerCase().replaceAll("[^A-Za-z']", ""))
+      .map(word => (word, 1))
+      .groupByKey(_._1)
+      .reduceGroups((a,b) => (a._1, a._2 + b._2))
+      .map(_._2)
       .write
       .option("quoteAll", false)
       .option("quote", " ")
