@@ -1,0 +1,16 @@
+version: '3'
+services:
+    hadoop:
+        image: zhangyuan/hadoop
+        volumes:
+        - data/dfs/:/dfs/
+        ports:
+        - "9000:9000"
+        - "50070:50070"
+    spark:
+        image: zhangyuan/spark
+        ports:
+        - "8080:8080"
+        - "18080:18080"
+        links:
+        - hadoop
