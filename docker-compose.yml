@@ -26,6 +26,5 @@ services:
         ports:
         - "9092:9092"
         - "2181:2181"
-
 networks:
     data-engineering-workshop-internal:
