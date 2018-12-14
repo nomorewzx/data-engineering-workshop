@@ -1,0 +1,33 @@
+version: '3'
+services:
+    hadoop:
+        image: zhangyuan/hadoop
+        hostname: hadoop
+        volumes:
+        - ./data/hadoop/:/dfs/
+        ports:
+        - "9000:9000"
+        - "50070:50070"
+        networks:
+        - data-engineering-workshop-internal
+    spark:
+        image: zhangyuan/spark
+        hostname: spark
+        ports:
+        - "8080:8080"
+        - "18080:18080"
+        networks:
+        - data-engineering-workshop-internal
+    kafka:
+        hostname: kafka
+        image: zhangyuan/kafka
+        volumes:
+        - ./data/zookeeper:/tmp/zookeeper
+        - ./data/kafka:/tmp/kafka-logs
+        networks:
+        - data-engineering-workshop-internal
+        ports:
+        - "9092:9092"
+        - "2181:2181"
+networks:
+    data-engineering-workshop-internal:
